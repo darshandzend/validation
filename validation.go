@@ -1,3 +1,6 @@
+// Simple validation that isn't dependent on any framework.
+// Idea and code taken from the Tango project: https://github.com/Astrata/tango/
+// Modified for my purposes.
 package validation
 
 import (
@@ -150,4 +153,22 @@ func NotEmpty(value string) error {
 		return fmt.Errorf("This value is required")
 	}
 	return nil
+}
+
+// A rule that returns error if the value is not an URL.
+func Url(value string) error {
+	match := MatchExpr(value, `(?i)^([a-z]+:\/\/[a-z0-9][a-z0-9\-\.]*.+)?$`)
+	if match == nil {
+		return nil
+	}
+	return fmt.Errorf("Value must be an URL.")
+}
+
+// A rule that returns error if the value is not a BSON ObjectId.
+func ObjectId(value string) error {
+	match := MatchExpr(value, `^([a-f0-9]{24})?$`)
+	if match == nil {
+		return nil
+	}
+	return fmt.Errorf("Expecting an ObjectId.")
 }
