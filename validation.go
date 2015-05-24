@@ -1,6 +1,3 @@
-// Simple validation that isn't dependent on any framework.
-// Idea and code taken from the Tango project: https://github.com/Astrata/tango/
-// Modified for my purposes.
 package validation
 
 import (
@@ -171,4 +168,22 @@ func ObjectId(value string) error {
 		return nil
 	}
 	return fmt.Errorf("Expecting an ObjectId.")
+}
+
+// A rule that returns error if the value is not a-zA-Z0-9.
+func Alpha(value string) error {
+	match := MatchExpr(value, `(?i)^([a-z0-9]+)?$`)
+	if match == nil {
+		return nil
+	}
+	return fmt.Errorf("Value must be a number or a letter from A to Z (case does not matter).")
+}
+
+// A rule that returns error if the value is not an e-mail.
+func Email(value string) error {
+	passed := MatchExpr(value, `(?i)^([a-z0-9][a-z0-9\.\-+_]*@[a-z0-9\-\.]+.[a-z]+)?$`)
+	if passed == nil {
+		return nil
+	}
+	return fmt.Errorf("Value must be an e-mail address.")
 }
