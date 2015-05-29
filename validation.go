@@ -187,3 +187,21 @@ func Email(value string) error {
 	}
 	return fmt.Errorf("Value must be an e-mail address.")
 }
+
+// A rule that returns error if the value is not numeric.
+func Numeric(value string) error {
+	passed := MatchExpr(value, `(?i)^([0-9]+)?$`)
+	if passed == nil {
+		return nil
+	}
+	return fmt.Errorf("Value must be a number.")
+}
+
+// A rule that returns error if the value is not a zip code.
+func ZipCode(value string) error {
+	passed := MatchExpr(value, `(?i)^([0-9]{5})?$`)
+	if passed == nil {
+		return nil
+	}
+	return fmt.Errorf("Value must be a zipcode (XXXXX).")
+}
