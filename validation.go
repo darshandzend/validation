@@ -205,3 +205,44 @@ func ZipCode(value string) error {
 	}
 	return fmt.Errorf("Value must be a zipcode (XXXXX).")
 }
+
+// A rule that returns a func that returns error if the value does not match
+// any of the strings passed in the slice.
+func EqualsAny(any []string) Rule {
+	return func(value string) error {
+		for _, x := range any {
+			if x == value {
+				return nil
+			}
+		}
+
+		return fmt.Errorf("Did not match the following: %s", strings.Join(any, ", "))
+	}
+}
+
+// A rule that returns a func that returns error if the value does not match
+// the date format.
+func Date(format string) Rule {
+	return func(value string) error {
+		_, err := time.Parse(format, value)
+		return err
+	}
+}
+
+// A rule that returns error if the value is not a SHA1 hash.
+func Sha1(value string) error {
+	passed := MatchExpr(value, `(?i)^([a-f0-9]{40})$`)
+	if passed == nil {
+		return nil
+	}
+	return fmt.Errorf("Value must be a SHA1 hash.")
+}
+
+// A rule that returns error if the value does not match a pattern.
+func MatchExpr(value string, expr string) error {
+	match, _ := regexp.MatchString(expr, value)
+	if match == true {
+		return nil
+	}
+	return fmt.Errorf("Value does not match pattern %s.", expr)
+}
